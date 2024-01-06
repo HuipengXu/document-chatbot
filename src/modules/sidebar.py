@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import os
 
 
@@ -8,16 +9,6 @@ class Sidebar:
     TEMPERATURE_MAX_VALUE = 1.0
     TEMPERATURE_DEFAULT_VALUE = 0.0
     TEMPERATURE_STEP = 0.01
-
-    @staticmethod
-    def about():
-        about = st.sidebar.expander("🧠 测试 ")
-        sections = [
-            "#### 测试2",
-            "#### 测试1",
-        ]
-        for section in sections:
-            about.write(section)
 
     @staticmethod
     def reset_chat_button():
@@ -47,15 +38,12 @@ class Sidebar:
             st.session_state.setdefault("模型", self.MODEL_OPTIONS[0])
             st.session_state.setdefault("温度", self.TEMPERATURE_DEFAULT_VALUE)
 
-    @staticmethod
-    def update_browser_history():
-        return ['你的历史文件'] + [
+    def show_file_list(self):
+        current_history = [
             file.rstrip(".pkl")
             for file in os.listdir("embeddings")
             if file.endswith("pkl")
         ]
-
-    def show_browser_history(self):
-        self.current_history = self.update_browser_history()
-        with st.sidebar.expander("🗂️ 历史文件", expanded=True):
-            return st.selectbox(label="选择文件", options=self.current_history)
+        with st.sidebar.expander("🗂️ 历史文件", expanded=False):
+            df = pd.DataFrame(current_history, columns=["文件列表"])
+            st.table(df)

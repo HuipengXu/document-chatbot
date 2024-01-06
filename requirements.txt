@@ -4,6 +4,7 @@ langchain-core==0.1.4
 transformers==4.36.2
 openai==0.27.7
 pandasai==0.2.15
+pandas==2.1.4
 pdfplumber
 pypdf==3.9.0
 streamlit==1.29.0

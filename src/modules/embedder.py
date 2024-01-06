@@ -73,15 +73,32 @@ class Embedder:
         with open(f"{self.PATH}/{original_filename}.pkl", "wb") as f:
             pickle.dump(vectors, f)
 
-    def getDocEmbeds(self, file, original_filename):
+    def getDocEmbeds(self, file=None, original_filename=None):
         """
         Retrieves document embeddings
         """
-        if not os.path.isfile(f"{self.PATH}/{original_filename}.pkl"):
+        if (
+            file is not None
+            and original_filename is not None
+            and not os.path.isfile(f"{self.PATH}/{original_filename}.pkl")
+        ):
             self.storeDocEmbeds(file, original_filename)
 
-        # Load the vectors from the pickle file
-        with open(f"{self.PATH}/{original_filename}.pkl", "rb") as f:
-            vectors = pickle.load(f)
+        return self.merge_all_vectors()
 
-        return vectors
+    def merge_all_vectors(self):
+        all_vectors = []
+
+        for file in os.listdir(self.PATH):
+            if file.endswith("pkl"):
+                with open(f"{self.PATH}/{file}", "rb") as f:
+                    all_vectors.append(pickle.load(f))
+
+        vectors_merged = None
+        if not all_vectors:
+            st.warning("请至少上传一个文件", icon="⚠️")
+        else:
+            vectors_merged = all_vectors[0]
+            for i in range(1, len(all_vectors)):
+                vectors_merged.merge_from(all_vectors[i])
+        return vectors_merged

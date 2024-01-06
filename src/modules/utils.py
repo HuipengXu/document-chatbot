@@ -85,20 +85,19 @@ class Utilities:
         return user_chat_api_key, user_embedding_api_key
 
     @staticmethod
-    def setup_chatbot(uploaded_file, model, temperature):
+    def setup_chatbot(model, temperature, uploaded_file=None):
         """
         Sets up the chatbot with the uploaded file, model, and temperature
         """
         embeds = Embedder()
 
         with st.spinner("Processing..."):
-            if not isinstance(uploaded_file, str):
+            if uploaded_file is not None:
                 uploaded_file.seek(0)
                 file = uploaded_file.read()
                 original_filename = uploaded_file.name
             else:
-                file = uploaded_file
-                original_filename = uploaded_file
+                file = original_filename = None
             # Get the document embeddings for the uploaded file
             vectors = embeds.getDocEmbeds(file, original_filename)
 

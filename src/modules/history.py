@@ -8,33 +8,16 @@ class ChatHistory:
         self.history = st.session_state.get("history", [])
         st.session_state["history"] = self.history
 
-    def default_greeting(self):
-        return "你好 ! 👋"
-
-    def default_prompt(self, topic):
-        return f"您好 ! 关于文件 {topic} 有什么可以帮助您的吗🤗"
-
-    def initialize_user_history(self):
-        st.session_state["user"] = [self.default_greeting()]
-
-    def initialize_assistant_history(self, uploaded_file):
-        st.session_state["assistant"] = [
-            self.default_prompt(
-                uploaded_file if isinstance(uploaded_file, str) else uploaded_file.name
-            )
-        ]
-
-    def initialize(self, uploaded_file):
+    def initialize(self):
         if "assistant" not in st.session_state:
-            self.initialize_assistant_history(uploaded_file)
+            st.session_state["assistant"] = ["你好 ! 🤗"]
         if "user" not in st.session_state:
-            self.initialize_user_history()
+            st.session_state["user"] = []
 
-    def reset(self, uploaded_file):
+    def reset(self):
         st.session_state["history"] = []
 
-        self.initialize_user_history()
-        self.initialize_assistant_history(uploaded_file)
+        self.initialize()
         st.session_state["reset_chat"] = False
 
     def append(self, mode, message):
@@ -43,11 +26,16 @@ class ChatHistory:
     def generate_messages(self, container):
         if st.session_state["assistant"]:
             with container:
-                for i in range(len(st.session_state["assistant"])):
+                message(
+                    st.session_state["assistant"][0],
+                    key=str(0),
+                    avatar_style="thumbs",
+                )
+                for i in range(1, len(st.session_state["assistant"])):
                     message(
-                        st.session_state["user"][i],
+                        st.session_state["user"][i - 1],
                         is_user=True,
-                        key=f"history_{i}_user",
+                        key=f"history_{i-1}_user",
                         avatar_style="big-smile",
                     )
                     message(

@@ -2,7 +2,6 @@ import streamlit as st
 
 
 class Layout:
-
     def show_api_key_missing(self):
         """
         Displays a message if the user has not entered an API key
@@ -23,7 +22,7 @@ class Layout:
         with st.form(key="my_form", clear_on_submit=True):
             user_input = st.text_area(
                 "Query:",
-                placeholder="关于这个文档的任何细节都可以问我...",
+                placeholder="想问我些啥呢...",
                 key="input",
                 label_visibility="collapsed",
             )
